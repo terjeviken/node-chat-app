@@ -3,7 +3,7 @@ const socketIO = require("socket.io");
 const http = require("http");
 const express = require("express");
 const app = express();
-
+const message = require("./utils/message");
 const port =  process.env.PORT || 3000;
 const publicPath = path.join(__dirname, "../public");
 
@@ -21,19 +21,34 @@ app.use(express.static(publicPath));
 io.on("connection", (cliSock) => {
 
     console.log("new user connected");
+    cliSock.emit("newMessage", message.generateMessage("Admin", "Welcome to chat - behave!"));
+
+    cliSock.broadcast.emit("newMessage",{
+        from: "Admin",
+        text: "new user joined...",
+        createdAt: new Date().getTime()
+    });
 
     cliSock.on("disconnect", (cliSock) => {
         console.log("client disconnected");
     });
 
-    cliSock.on("createMessage", (msg)=>{
+    cliSock.on("createMessage", (msg, callback)=>{
         console.log("Create Message: Distributing: ",msg);
-        
+
+
         io.emit("newMessage", {
-            from : msg.from,
+            from: msg.from,
             text: msg.text,
             createdAt: new Date().getTime()
         });
+        callback("This is from the server..");
+
+        // socket.broadcast.emit("newMessage", {
+        //     from : msg.from,
+        //     text: msg.text,
+        //     createdAt: new Date().getTime()
+        // });
     });
 
 
