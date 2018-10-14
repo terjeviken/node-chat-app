@@ -21,25 +21,19 @@ app.use(express.static(publicPath));
 io.on("connection", (cliSock) => {
 
     console.log("new user connected");
-    
-   let msg = {
-      "from"  : "Hellboy",
-      "text" : "You are so #4ckd :|",      
-      "createdAt" : new Date()
-    }; 
-
-    cliSock.emit("newMessage", msg);
 
     cliSock.on("disconnect", (cliSock) => {
         console.log("client disconnected");
     });
 
-    cliSock.on("createEmail", (newMail)=>{
-        console.log("new email", newMail);
-    });
-
-    cliSock.on("createMessage", (data)=>{
-        console.log("Create Message: ",data);
+    cliSock.on("createMessage", (msg)=>{
+        console.log("Create Message: Distributing: ",msg);
+        
+        io.emit("newMessage", {
+            from : msg.from,
+            text: msg.text,
+            createdAt: new Date().getTime()
+        });
     });
 
 

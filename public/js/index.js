@@ -5,11 +5,7 @@ let socket = io(); // initiate request...
 // let createTime = document.getElementById("createTime");
 
 socket.on("connect", function () {
-    console.log("Connected to server");
-    socket.emit("createMessage",{
-        "from" : "Woopie",       
-        "text" : "Nothing going on here..."
-    });
+    console.log("Connected to server");    
 });
 
 socket.on("disconnect", function () {
@@ -18,9 +14,6 @@ socket.on("disconnect", function () {
 
 socket.on("newMessage", function (data) {
     console.log("Message received: ", data);
-    // text.innerText = data.text;
-    // subject.innerText = data.subject;
-    // createTime.innerText = data.createTime;
 });
 
 socket.on("newMesage", function(data){
